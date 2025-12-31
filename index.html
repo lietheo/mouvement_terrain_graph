@@ -1,24 +1,15 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <title>Donut Chart - Interaction Fix</title>
+    <title>Donut Chart - Mouvements de Terrain</title>
     <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #fafafa;
-        }
-        #vis {
-            width: 100%;
-            display: flex;
-            justify-content: center;
+            margin: 0; display: flex; justify-content: center;
+            align-items: center; height: 100vh; background-color: #fafafa;
         }
     </style>
 </head>
@@ -37,75 +28,52 @@
 
         var spec = {
             "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-            "width": 310,
-            "height": 310,
-            "data": {"values": data},
+            "width": 320,
+            "height": 320,
             "background": "transparent",
-            "transform": [
-                {"calculate": "datum['Proportion (%)'] + '%'", "as": "label_percent"}
-            ],
-            "encoding": {
-                "theta": {"field": "Proportion (%)", "type": "quantitative", "stack": true},
-                "color": {
-                    "field": "Proportion (%)",
-                    "type": "quantitative",
-                    "scale": {"range": ["#D7CCC8", "#3E2723"]},
-                    "legend": null
-                },
-                "order": {"field": "Proportion (%)", "sort": "descending"},
-                "tooltip": [
-                    {"field": "Risque", "type": "nominal", "title": "Type"},
-                    {"field": "label_percent", "type": "nominal", "title": "Part"}
-                ]
-            },
             "layer": [
                 {
-                    "mark": {
-                        "type": "arc", 
-                        "outerRadius": 145, 
-                        "innerRadius": 90, 
-                        "stroke": "#fff", 
-                        "strokeWidth": 1.5,
-                        "cursor": "pointer",
-                        "tooltip": true  /* FORCE L'INTERACTION SUR L'ARC */
-                    }
-                },
-                {
-                    "mark": {
-                        "type": "text", 
-                        "radius": 118, 
-                        "fontSize": 14,
-                        "fontWeight": "bold",
-                        "interactive": false /* EMPECHE LE TEXTE DE BLOQUER LA SOURIS */
-                    },
+                    // --- COUCHE 1 : LE DONUT (INTERACTIF) ---
+                    "data": {"values": data},
+                    "transform": [{"calculate": "datum['Proportion (%)'] + '%'", "as": "label_percent"}],
                     "encoding": {
-                        "text": {"field": "label_percent"},
+                        "theta": {"field": "Proportion (%)", "type": "quantitative", "stack": true},
                         "color": {
-                            "condition": {"test": "datum['Proportion (%)'] < 15", "value": "#3E2723"},
-                            "value": "white"
+                            "field": "Proportion (%)", "type": "quantitative",
+                            "scale": {"range": ["#D7CCC8", "#3E2723"]}, "legend": null
+                        },
+                        "order": {"field": "Proportion (%)", "sort": "descending"},
+                        "tooltip": [
+                            {"field": "Risque", "type": "nominal", "title": "Nature"},
+                            {"field": "Proportion (%)", "type": "quantitative", "title": "Part (%)"}
+                        ]
+                    },
+                    "layer": [
+                        { "mark": { "type": "arc", "outerRadius": 150, "innerRadius": 90, "stroke": "#fff", "cursor": "pointer" } },
+                        { 
+                            "mark": { "type": "text", "radius": 120, "fontWeight": "bold", "interactive": false },
+                            "encoding": { "text": {"field": "label_percent"}, "color": {"condition": {"test": "datum['Proportion (%)'] < 15", "value": "#3E2723"}, "value": "white"} }
                         }
-                    }
+                    ]
                 },
                 {
+                    // --- COUCHE 2 : LE TEXTE CENTRAL (VISIBLE MAIS MORT) ---
+                    "data": {"values": [{}]}, // IMPORTANT : On vide les données ici
                     "mark": {
-                        "type": "text", 
-                        "text": ["TOTAL", "100%"], 
-                        "fontSize": 15, 
+                        "type": "text",
+                        "text": ["TOTAL", "100%"],
+                        "fontSize": 16,
                         "fontWeight": "bold",
-                        "interactive": false /* EMPECHE LE CENTRE DE BLOQUER LA SOURIS */
-                    },
-                    "encoding": {
-                        "color": {"value": "#8D6E63"}
+                        "color": "#8D6E63",
+                        "interactive": false, // Ignore la souris
+                        "tooltip": null      // Supprime le pop-up
                     }
                 }
             ],
-            "config": {
-                "view": {"stroke": "transparent"}
-            }
+            "config": { "view": {"stroke": "transparent"}, "arc": {"padAngle": 0.02} }
         };
 
-        // Utilisation de tooltip: true dans les options d'embed
-        vegaEmbed('#vis', spec, {mode: "vega-lite", actions: false, tooltip: true}).catch(console.error);
+        vegaEmbed('#vis', spec, {actions: false});
     </script>
 </body>
 </html>
