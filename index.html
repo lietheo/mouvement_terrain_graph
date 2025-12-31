@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <title>Donut Chart - Format Large</title>
+    <title>Donut Chart - Format Moyen</title>
     <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
@@ -37,8 +37,8 @@
 
         var spec = {
             "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-            "width": 350,  /* LARGEUR GLOBALE */
-            "height": 350, /* HAUTEUR GLOBALE */
+            "width": 350,  /* Taille ajustée : ni trop grand, ni trop petit */
+            "height": 350, 
             "data": {"values": data},
             "background": "transparent",
             "transform": [
@@ -58,17 +58,17 @@
                 {
                     "mark": {
                         "type": "arc", 
-                        "outerRadius": 220, /* Augmenté pour remplir les 450px */
-                        "innerRadius": 130, /* Anneau plus large et imposant */
+                        "outerRadius": 170, /* Rayon extérieur optimisé pour 350px */
+                        "innerRadius": 100, /* Épaisseur de l'anneau équilibrée */
                         "stroke": "#fff", 
-                        "strokeWidth": 2
+                        "strokeWidth": 1.5
                     }
                 },
                 {
                     "mark": {
                         "type": "text", 
-                        "radius": 175, /* Centré dans l'anneau plus large */
-                        "fontSize": 18,
+                        "radius": 135, /* Placement des % au centre de la bande */
+                        "fontSize": 15,
                         "fontWeight": "bold"
                     },
                     "encoding": {
@@ -83,9 +83,8 @@
                     "mark": {
                         "type": "text", 
                         "text": ["TOTAL", "100%"], 
-                        "fontSize": 20, 
-                        "fontWeight": "bold",
-                        "dy": 0
+                        "fontSize": 16, 
+                        "fontWeight": "bold"
                     },
                     "encoding": {
                         "color": {"value": "#8D6E63"}
@@ -101,4 +100,3 @@
     </script>
 </body>
 </html>
-
