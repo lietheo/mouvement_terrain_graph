@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <title>Donut Chart - Format Compact</title>
+    <title>Donut Chart - Format Optimisé</title>
     <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
@@ -37,8 +37,8 @@
 
         var spec = {
             "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-            "width": 280,  /* Format compact */
-            "height": 280, 
+            "width": 310,  /* Taille très légèrement augmentée */
+            "height": 310, 
             "data": {"values": data},
             "background": "transparent",
             "transform": [
@@ -52,23 +52,29 @@
                     "scale": {"range": ["#D7CCC8", "#3E2723"]},
                     "legend": null
                 },
-                "order": {"field": "Proportion (%)", "sort": "descending"}
+                "order": {"field": "Proportion (%)", "sort": "descending"},
+                /* AJOUT DE L'INTERACTIVITÉ ICI */
+                "tooltip": [
+                    {"field": "Risque", "type": "nominal", "title": "Type de risque"},
+                    {"field": "label_percent", "type": "nominal", "title": "Part"}
+                ]
             },
             "layer": [
                 {
                     "mark": {
                         "type": "arc", 
-                        "outerRadius": 130, /* Ajusté pour 280px */
-                        "innerRadius": 80,  /* Anneau un peu plus fin pour le format compact */
+                        "outerRadius": 145, /* Ajusté pour 310px */
+                        "innerRadius": 90,  /* Anneau un peu plus présent */
                         "stroke": "#fff", 
-                        "strokeWidth": 1
+                        "strokeWidth": 1.5,
+                        "cursor": "pointer" /* Change le curseur au survol */
                     }
                 },
                 {
                     "mark": {
                         "type": "text", 
-                        "radius": 105, /* Chiffres centrés dans l'anneau */
-                        "fontSize": 13,
+                        "radius": 118, /* Pourcentages bien centrés */
+                        "fontSize": 14,
                         "fontWeight": "bold"
                     },
                     "encoding": {
@@ -83,7 +89,7 @@
                     "mark": {
                         "type": "text", 
                         "text": ["TOTAL", "100%"], 
-                        "fontSize": 14, 
+                        "fontSize": 15, 
                         "fontWeight": "bold"
                     },
                     "encoding": {
