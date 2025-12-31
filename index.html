@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>Donut Chart - Échelle Séquentielle</title>
+    <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            text-align: center;
+            background-color: #fafafa;
+            color: #333;
+        }
+        #vis {
+            width: 600px;
+            margin: 40px auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="vis"></div>
+
+    <script type="text/javascript">
+        var data = [
+            {"Risque": "Effondrement", "Proportion (%)": 39},
+            {"Risque": "Glissement", "Proportion (%)": 26},
+            {"Risque": "Chute de blocs", "Proportion (%)": 23},
+            {"Risque": "Érosion de berges", "Proportion (%)": 7},
+            {"Risque": "Coulée", "Proportion (%)": 5}
+        ];
+
+        var spec = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "data": {"values": data},
+            "description": "Donut chart avec intensité couleur proportionnelle",
+            
+            // Préparation des données pour l'affichage
+            "transform": [
+                {"calculate": "datum['Proportion (%)'] + '%'", "as": "label_percent"}
+            ],
+
+            "title": {
+                "text": "Analyse des Mouvements",
+                "fontSize": 18,
+                "anchor": "middle",
+                "offset": 20
+            },
+            
+            "encoding": {
+                "theta": {"field": "Proportion (%)", "stack": true},
+                // --- CŒUR DUchangement : COULEUR QUANTITATIVE ---
+                "color": {
+                    "field": "Proportion (%)", // On mappe sur la valeur numérique
+                    "type": "quantitative",  // Important : définit une échelle continue (dégradé)
+                    "scale": {
+                        // Dégradé personnalisé : du Beige (faible) au Café Noir (fort)
+                        "range": ["#D7CCC8", "#3E2723"] 
+                    },
+                    "legend": null // Pas de légende nécessaire, l'intensité parle d'elle-même
+                },
+                // Tri descendant pour créer un effet de "dégradé tournant" fluide
+                "order": {"field": "Proportion (%)", "sort": "descending"},
+                "tooltip": [
+                    {"field": "Risque", "title": "Nature du risque"},
+                    {"field": "Proportion (%)", "format": ".1f", "title": "Part (%)"}
+                ]
+            },
+            
+            "layer": [
+                // 1. L'ANNEAU
+                {
+                    "mark": {"type": "arc", "outerRadius": 120, "innerRadius": 70, "stroke": "#fff", "strokeWidth": 1}
+                },
+                // 2. LES ÉTIQUETTES INTELLIGENTES
+                {
+                    "mark": {"type": "text", "radius": 95},
+                    "encoding": {
+                        "text": {"field": "label_percent"},
+                        // --- GESTION PRO DU CONTRASTE ---
+                        // Si la couleur de fond est claire (valeur < 15%), texte noir.
+                        // Sinon, texte blanc. Cela garantit la lisibilité.
+                        "color": {
+                            "condition": {"test": "datum['Proportion (%)'] < 15", "value": "#3E2723"}, 
+                            "value": "white"
+                        },
+                        "fontSize": {"value": 14},
+                        "fontWeight": {"value": "bold"}
+                    }
+                },
+                // 3. TEXTE CENTRAL
+                {
+                    "mark": {"type": "text", "text": ["TOTAL", "100%"]},
+                    "encoding": {
+                        "color": {"value": "#8D6E63"},
+                        "size": {"value": 12}
+                    }
+                }
+            ],
+            "config": {
+                "view": {"stroke": "transparent"},
+                "arc": {"padAngle": 0.02} // Espacement fin pour l'élégance
+            }
+        };
+
+        vegaEmbed('#vis', spec, {mode: "vega-lite", actions: false}).catch(console.error);
+    </script>
+</body>
+</html>
