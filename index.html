@@ -11,16 +11,19 @@
             text-align: center;
             background-color: #fafafa;
             color: #333;
-            /* Flexbox pour centrer le contenu verticalement et horizontalement si besoin */
+            /* Flexbox pour centrer le contenu verticalement et horizontalement */
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
+            overflow: hidden; /* Sécurité supplémentaire pour éviter les sliders */
         }
         #vis {
             width: 100%;
-            max-width: 600px;
+            /* On autorise le conteneur à prendre toute la largeur dispo */
+            display: flex;
+            justify-content: center;
         }
     </style>
 </head>
@@ -41,27 +44,22 @@
             "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
             "data": {"values": data},
             "description": "Donut chart avec intensité couleur proportionnelle",
+            "background": "transparent", // Fond transparent pour s'intégrer au style parent
             
-            // Préparation des données pour l'affichage
             "transform": [
                 {"calculate": "datum['Proportion (%)'] + '%'", "as": "label_percent"}
             ],
 
-            // TITRE SUPPRIMÉ ICI COMME DEMANDÉ
-            
             "encoding": {
                 "theta": {"field": "Proportion (%)", "stack": true},
-                // --- CŒUR DU CHANGEMENT : COULEUR QUANTITATIVE ---
                 "color": {
-                    "field": "Proportion (%)", // On mappe sur la valeur numérique
-                    "type": "quantitative",  // Important : définit une échelle continue (dégradé)
+                    "field": "Proportion (%)",
+                    "type": "quantitative",
                     "scale": {
-                        // Dégradé personnalisé : du Beige (faible) au Café Noir (fort)
                         "range": ["#D7CCC8", "#3E2723"] 
                     },
-                    "legend": null // Pas de légende nécessaire, l'intensité parle d'elle-même
+                    "legend": null 
                 },
-                // Tri descendant pour créer un effet de "dégradé tournant" fluide
                 "order": {"field": "Proportion (%)", "sort": "descending"},
                 "tooltip": [
                     {"field": "Risque", "title": "Nature du risque"},
@@ -70,23 +68,29 @@
             },
             
             "layer": [
-                // 1. L'ANNEAU
+                // 1. L'ANNEAU (TAILLE AUGMENTÉE)
                 {
-                    "mark": {"type": "arc", "outerRadius": 120, "innerRadius": 70, "stroke": "#fff", "strokeWidth": 1}
+                    "mark": {
+                        "type": "arc", 
+                        "outerRadius": 170,  /* AVANT: 120 -> Augmenté pour remplir l'espace */
+                        "innerRadius": 100,  /* AVANT: 70  -> Augmenté pour garder l'épaisseur */
+                        "stroke": "#fff", 
+                        "strokeWidth": 1
+                    }
                 },
-                // 2. LES ÉTIQUETTES INTELLIGENTES
+                // 2. LES ÉTIQUETTES INTELLIGENTES (POSITION AJUSTÉE)
                 {
-                    "mark": {"type": "text", "radius": 95},
+                    "mark": {
+                        "type": "text", 
+                        "radius": 135  /* AVANT: 95 -> Ajusté au milieu du nouvel anneau */
+                    },
                     "encoding": {
                         "text": {"field": "label_percent"},
-                        // --- GESTION PRO DU CONTRASTE ---
-                        // Si la couleur de fond est claire (valeur < 15%), texte noir.
-                        // Sinon, texte blanc. Cela garantit la lisibilité.
                         "color": {
                             "condition": {"test": "datum['Proportion (%)'] < 15", "value": "#3E2723"}, 
                             "value": "white"
                         },
-                        "fontSize": {"value": 14},
+                        "fontSize": {"value": 16}, /* Texte un peu plus grand */
                         "fontWeight": {"value": "bold"}
                     }
                 },
@@ -95,16 +99,17 @@
                     "mark": {"type": "text", "text": ["TOTAL", "100%"]},
                     "encoding": {
                         "color": {"value": "#8D6E63"},
-                        "size": {"value": 12}
+                        "size": {"value": 14} /* Texte un peu plus grand */
                     }
                 }
             ],
             "config": {
                 "view": {"stroke": "transparent"},
-                "arc": {"padAngle": 0.02} // Espacement fin pour l'élégance
+                "arc": {"padAngle": 0.02}
             }
         };
 
+        // Actions: false retire le menu "..." de Vega
         vegaEmbed('#vis', spec, {mode: "vega-lite", actions: false}).catch(console.error);
     </script>
 </body>
