@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <title>Donut Chart - Format Moyen</title>
+    <title>Donut Chart - Format Compact</title>
     <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
@@ -37,8 +37,8 @@
 
         var spec = {
             "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-            "width": 350,  /* Taille ajustée : ni trop grand, ni trop petit */
-            "height": 350, 
+            "width": 280,  /* Format compact */
+            "height": 280, 
             "data": {"values": data},
             "background": "transparent",
             "transform": [
@@ -58,17 +58,17 @@
                 {
                     "mark": {
                         "type": "arc", 
-                        "outerRadius": 170, /* Rayon extérieur optimisé pour 350px */
-                        "innerRadius": 100, /* Épaisseur de l'anneau équilibrée */
+                        "outerRadius": 130, /* Ajusté pour 280px */
+                        "innerRadius": 80,  /* Anneau un peu plus fin pour le format compact */
                         "stroke": "#fff", 
-                        "strokeWidth": 1.5
+                        "strokeWidth": 1
                     }
                 },
                 {
                     "mark": {
                         "type": "text", 
-                        "radius": 135, /* Placement des % au centre de la bande */
-                        "fontSize": 15,
+                        "radius": 105, /* Chiffres centrés dans l'anneau */
+                        "fontSize": 13,
                         "fontWeight": "bold"
                     },
                     "encoding": {
@@ -83,7 +83,7 @@
                     "mark": {
                         "type": "text", 
                         "text": ["TOTAL", "100%"], 
-                        "fontSize": 16, 
+                        "fontSize": 14, 
                         "fontWeight": "bold"
                     },
                     "encoding": {
