@@ -1,27 +1,22 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <title>Donut Chart - Échelle Séquentielle</title>
+    <title>Donut Chart - Format Large</title>
     <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
     <style>
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            text-align: center;
-            background-color: #fafafa;
-            color: #333;
-            /* Flexbox pour centrer le contenu verticalement et horizontalement */
+            font-family: 'Segoe UI', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            overflow: hidden; /* Sécurité supplémentaire pour éviter les sliders */
+            background-color: #fafafa;
         }
         #vis {
             width: 100%;
-            /* On autorise le conteneur à prendre toute la largeur dispo */
             display: flex;
             justify-content: center;
         }
@@ -42,74 +37,66 @@
 
         var spec = {
             "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "width": 450,  /* LARGEUR GLOBALE */
+            "height": 450, /* HAUTEUR GLOBALE */
             "data": {"values": data},
-            "description": "Donut chart avec intensité couleur proportionnelle",
-            "background": "transparent", // Fond transparent pour s'intégrer au style parent
-            
+            "background": "transparent",
             "transform": [
                 {"calculate": "datum['Proportion (%)'] + '%'", "as": "label_percent"}
             ],
-
             "encoding": {
-                "theta": {"field": "Proportion (%)", "stack": true},
+                "theta": {"field": "Proportion (%)", "type": "quantitative", "stack": true},
                 "color": {
                     "field": "Proportion (%)",
                     "type": "quantitative",
-                    "scale": {
-                        "range": ["#D7CCC8", "#3E2723"] 
-                    },
-                    "legend": null 
+                    "scale": {"range": ["#D7CCC8", "#3E2723"]},
+                    "legend": null
                 },
-                "order": {"field": "Proportion (%)", "sort": "descending"},
-                "tooltip": [
-                    {"field": "Risque", "title": "Nature du risque"},
-                    {"field": "Proportion (%)", "format": ".1f", "title": "Part (%)"}
-                ]
+                "order": {"field": "Proportion (%)", "sort": "descending"}
             },
-            
             "layer": [
-                // 1. L'ANNEAU (TAILLE AUGMENTÉE)
                 {
                     "mark": {
                         "type": "arc", 
-                        "outerRadius": 170,  /* AVANT: 120 -> Augmenté pour remplir l'espace */
-                        "innerRadius": 100,  /* AVANT: 70  -> Augmenté pour garder l'épaisseur */
+                        "outerRadius": 220, /* Augmenté pour remplir les 450px */
+                        "innerRadius": 130, /* Anneau plus large et imposant */
                         "stroke": "#fff", 
-                        "strokeWidth": 1
+                        "strokeWidth": 2
                     }
                 },
-                // 2. LES ÉTIQUETTES INTELLIGENTES (POSITION AJUSTÉE)
                 {
                     "mark": {
                         "type": "text", 
-                        "radius": 135  /* AVANT: 95 -> Ajusté au milieu du nouvel anneau */
+                        "radius": 175, /* Centré dans l'anneau plus large */
+                        "fontSize": 18,
+                        "fontWeight": "bold"
                     },
                     "encoding": {
                         "text": {"field": "label_percent"},
                         "color": {
-                            "condition": {"test": "datum['Proportion (%)'] < 15", "value": "#3E2723"}, 
+                            "condition": {"test": "datum['Proportion (%)'] < 15", "value": "#3E2723"},
                             "value": "white"
-                        },
-                        "fontSize": {"value": 16}, /* Texte un peu plus grand */
-                        "fontWeight": {"value": "bold"}
+                        }
                     }
                 },
-                // 3. TEXTE CENTRAL
                 {
-                    "mark": {"type": "text", "text": ["TOTAL", "100%"]},
+                    "mark": {
+                        "type": "text", 
+                        "text": ["TOTAL", "100%"], 
+                        "fontSize": 20, 
+                        "fontWeight": "bold",
+                        "dy": 0
+                    },
                     "encoding": {
-                        "color": {"value": "#8D6E63"},
-                        "size": {"value": 14} /* Texte un peu plus grand */
+                        "color": {"value": "#8D6E63"}
                     }
                 }
             ],
             "config": {
-                "view": {"stroke": "transparent"},
-                "arc": {"padAngle": 0.02}
+                "view": {"stroke": "transparent"}
             }
         };
 
-        // Actions: false retire le menu "..." de Vega
         vegaEmbed('#vis', spec, {mode: "vega-lite", actions: false}).catch(console.error);
     </script>
 </body>
