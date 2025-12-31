@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <title>Donut Chart - Format Optimisé</title>
+    <title>Donut Chart - Interaction Fix</title>
     <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
@@ -37,8 +37,8 @@
 
         var spec = {
             "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-            "width": 310,  /* Taille très légèrement augmentée */
-            "height": 310, 
+            "width": 310,
+            "height": 310,
             "data": {"values": data},
             "background": "transparent",
             "transform": [
@@ -53,9 +53,8 @@
                     "legend": null
                 },
                 "order": {"field": "Proportion (%)", "sort": "descending"},
-                /* AJOUT DE L'INTERACTIVITÉ ICI */
                 "tooltip": [
-                    {"field": "Risque", "type": "nominal", "title": "Type de risque"},
+                    {"field": "Risque", "type": "nominal", "title": "Type"},
                     {"field": "label_percent", "type": "nominal", "title": "Part"}
                 ]
             },
@@ -63,19 +62,21 @@
                 {
                     "mark": {
                         "type": "arc", 
-                        "outerRadius": 145, /* Ajusté pour 310px */
-                        "innerRadius": 90,  /* Anneau un peu plus présent */
+                        "outerRadius": 145, 
+                        "innerRadius": 90, 
                         "stroke": "#fff", 
                         "strokeWidth": 1.5,
-                        "cursor": "pointer" /* Change le curseur au survol */
+                        "cursor": "pointer",
+                        "tooltip": true  /* FORCE L'INTERACTION SUR L'ARC */
                     }
                 },
                 {
                     "mark": {
                         "type": "text", 
-                        "radius": 118, /* Pourcentages bien centrés */
+                        "radius": 118, 
                         "fontSize": 14,
-                        "fontWeight": "bold"
+                        "fontWeight": "bold",
+                        "interactive": false /* EMPECHE LE TEXTE DE BLOQUER LA SOURIS */
                     },
                     "encoding": {
                         "text": {"field": "label_percent"},
@@ -90,7 +91,8 @@
                         "type": "text", 
                         "text": ["TOTAL", "100%"], 
                         "fontSize": 15, 
-                        "fontWeight": "bold"
+                        "fontWeight": "bold",
+                        "interactive": false /* EMPECHE LE CENTRE DE BLOQUER LA SOURIS */
                     },
                     "encoding": {
                         "color": {"value": "#8D6E63"}
@@ -102,7 +104,8 @@
             }
         };
 
-        vegaEmbed('#vis', spec, {mode: "vega-lite", actions: false}).catch(console.error);
+        // Utilisation de tooltip: true dans les options d'embed
+        vegaEmbed('#vis', spec, {mode: "vega-lite", actions: false, tooltip: true}).catch(console.error);
     </script>
 </body>
 </html>
