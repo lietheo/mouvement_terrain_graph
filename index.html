@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <title>Donut Chart - Mouvements de Terrain</title>
+    <title>Donut Chart - Pur</title>
     <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
@@ -30,50 +30,63 @@
             "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
             "width": 320,
             "height": 320,
+            "data": {"values": data},
             "background": "transparent",
+            "transform": [
+                {"calculate": "datum['Proportion (%)'] + '%'", "as": "label_percent"}
+            ],
+            "encoding": {
+                "theta": {"field": "Proportion (%)", "type": "quantitative", "stack": true},
+                "color": {
+                    "field": "Proportion (%)",
+                    "type": "quantitative",
+                    "scale": {"range": ["#D7CCC8", "#3E2723"]},
+                    "legend": null
+                },
+                "order": {"field": "Proportion (%)", "sort": "descending"},
+                "tooltip": [
+                    {"field": "Risque", "type": "nominal", "title": "Nature"},
+                    {"field": "label_percent", "type": "nominal", "title": "Part"}
+                ]
+            },
             "layer": [
                 {
-                    // --- COUCHE 1 : LE DONUT (INTERACTIF) ---
-                    "data": {"values": data},
-                    "transform": [{"calculate": "datum['Proportion (%)'] + '%'", "as": "label_percent"}],
-                    "encoding": {
-                        "theta": {"field": "Proportion (%)", "type": "quantitative", "stack": true},
-                        "color": {
-                            "field": "Proportion (%)", "type": "quantitative",
-                            "scale": {"range": ["#D7CCC8", "#3E2723"]}, "legend": null
-                        },
-                        "order": {"field": "Proportion (%)", "sort": "descending"},
-                        "tooltip": [
-                            {"field": "Risque", "type": "nominal", "title": "Nature"},
-                            {"field": "Proportion (%)", "type": "quantitative", "title": "Part (%)"}
-                        ]
-                    },
-                    "layer": [
-                        { "mark": { "type": "arc", "outerRadius": 150, "innerRadius": 90, "stroke": "#fff", "cursor": "pointer" } },
-                        { 
-                            "mark": { "type": "text", "radius": 120, "fontWeight": "bold", "interactive": false },
-                            "encoding": { "text": {"field": "label_percent"}, "color": {"condition": {"test": "datum['Proportion (%)'] < 15", "value": "#3E2723"}, "value": "white"} }
-                        }
-                    ]
+                    // LE DONUT
+                    "mark": {
+                        "type": "arc", 
+                        "outerRadius": 150, 
+                        "innerRadius": 90, 
+                        "stroke": "#fff", 
+                        "strokeWidth": 2,
+                        "cursor": "pointer"
+                    }
                 },
                 {
-                    // --- COUCHE 2 : LE TEXTE CENTRAL (VISIBLE MAIS MORT) ---
-                    "data": {"values": [{}]}, // IMPORTANT : On vide les données ici
+                    // LES % SUR LES SEGMENTS
                     "mark": {
-                        "type": "text",
-                        "text": ["TOTAL", "100%"],
-                        "fontSize": 16,
+                        "type": "text", 
+                        "radius": 120, 
+                        "fontSize": 14, 
                         "fontWeight": "bold",
-                        "color": "#8D6E63",
-                        "interactive": false, // Ignore la souris
-                        "tooltip": null      // Supprime le pop-up
+                        "interactive": false 
+                    },
+                    "encoding": {
+                        "text": {"field": "label_percent"},
+                        "color": {
+                            "condition": {"test": "datum['Proportion (%)'] < 15", "value": "#3E2723"}, 
+                            "value": "white"
+                        }
                     }
                 }
+                // LA COUCHE "TOTAL" A ÉTÉ SUPPRIMÉE ICI
             ],
-            "config": { "view": {"stroke": "transparent"}, "arc": {"padAngle": 0.02} }
+            "config": {
+                "view": {"stroke": "transparent"},
+                "arc": {"padAngle": 0.02}
+            }
         };
 
-        vegaEmbed('#vis', spec, {actions: false});
+        vegaEmbed('#vis', spec, {actions: false}).catch(console.error);
     </script>
 </body>
 </html>
