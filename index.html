@@ -11,10 +11,16 @@
             text-align: center;
             background-color: #fafafa;
             color: #333;
+            /* Flexbox pour centrer le contenu verticalement et horizontalement si besoin */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
         #vis {
-            width: 600px;
-            margin: 40px auto;
+            width: 100%;
+            max-width: 600px;
         }
     </style>
 </head>
@@ -41,16 +47,11 @@
                 {"calculate": "datum['Proportion (%)'] + '%'", "as": "label_percent"}
             ],
 
-            "title": {
-                "text": "Analyse des Mouvements",
-                "fontSize": 18,
-                "anchor": "middle",
-                "offset": 20
-            },
+            // TITRE SUPPRIMÉ ICI COMME DEMANDÉ
             
             "encoding": {
                 "theta": {"field": "Proportion (%)", "stack": true},
-                // --- CŒUR DUchangement : COULEUR QUANTITATIVE ---
+                // --- CŒUR DU CHANGEMENT : COULEUR QUANTITATIVE ---
                 "color": {
                     "field": "Proportion (%)", // On mappe sur la valeur numérique
                     "type": "quantitative",  // Important : définit une échelle continue (dégradé)
